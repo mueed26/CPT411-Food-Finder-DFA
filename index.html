@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Finder DFA — CPT411 Assignment</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- Noise texture overlay -->
+    <div class="noise"></div>
+
+    <div class="container">
+
+        <!-- ======================== HEADER ======================== -->
+        <header>
+            <div class="badge">CPT411 Automata Theory & Formal Languages</div>
+            <h1>Food Finder <span class="gradient-text">DFA</span></h1>
+            <p class="subtitle">A Deterministic Finite Automata recognizer for 60 Malaysian food terms.<br>Processes
+                text one character at a time, simulating a finite state machine.</p>
+        </header>
+
+        <!-- ======================== DFA STATS BAR ======================== -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-num" id="stat-states">&mdash;</div>
+                <div class="stat-label">States</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num" id="stat-transitions">&mdash;</div>
+                <div class="stat-label">Transitions</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num" id="stat-patterns">60</div>
+                <div class="stat-label">Patterns</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num" id="stat-alphabet">&mdash;</div>
+                <div class="stat-label">Alphabet Size</div>
+            </div>
+        </div>
+
+        <!-- ======================== MAIN GRID ======================== -->
+        <div class="main-grid">
+
+            <!-- INPUT SECTION -->
+            <section class="card full-width">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="dot"></span>
+                        Input text
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn-chip" onclick="loadSample()">Load sample text</button>
+                        <button class="btn-chip" onclick="clearAll()">Clear</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <textarea id="text-input" class="text-input"
+                        placeholder="Paste or type your text here to scan for Malaysian food terms..."
+                        spellcheck="false"></textarea>
+                    <div class="input-actions">
+                        <button class="btn btn-primary" onclick="runDFA()">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="5 3 19 12 5 21 5 3" />
+                            </svg>
+                            Run DFA
+                        </button>
+                        <span class="or-text">or</span>
+                        <input type="file" id="file-input" class="file-input-hidden" accept=".txt,.text"
+                            onchange="loadFile(event)">
+                        <label for="file-input" class="btn btn-ghost">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                            Upload .txt file
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STATUS BANNER -->
+            <div id="status-banner" class="status-banner"></div>
+
+            <!-- MATCH RESULTS TABLE -->
+            <section class="card" id="results-card" style="display:none">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="dot"></span>
+                        Match results
+                    </div>
+                    <span class="card-meta" id="match-count"></span>
+                </div>
+                <div class="card-body no-padding">
+                    <div class="table-scroll">
+                        <table class="results-table">
+                            <thead>
+                                <tr>
+                                    <th>Food term</th>
+                                    <th>Count</th>
+                                    <th>Positions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="results-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CONTEXT MATCHES -->
+            <section class="card" id="context-card" style="display:none">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="dot"></span>
+                        Match contexts
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="context-list" id="context-list"></div>
+                </div>
+            </section>
+
+            <!-- HIGHLIGHTED TEXT -->
+            <section class="card full-width" id="highlight-card" style="display:none">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="dot"></span>
+                        Highlighted text
+                    </div>
+                    <span class="card-meta" id="text-length"></span>
+                </div>
+                <div class="card-body">
+                    <div class="highlighted-output" id="highlighted-output"></div>
+                </div>
+            </section>
+
+            <!-- PATTERNS LIST -->
+            <section class="card full-width">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="dot"></span>
+                        Food patterns <span class="card-meta" style="margin-left:8px">60 terms</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="patterns-grid" id="patterns-grid"></div>
+                </div>
+            </section>
+
+            <!-- DFA STRUCTURE INFO -->
+            <section class="card full-width">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="dot"></span>
+                        DFA structure
+                    </div>
+                    <button class="btn-chip btn-chip-accent" onclick="toggleDFADetail()">
+                        <span id="dfa-toggle-text">Show transition table</span>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="dfa-info-grid" id="dfa-info-grid"></div>
+
+                    <!-- Detailed DFA info (hidden by default, toggled by button) -->
+                    <div class="dfa-detail-section" id="dfa-detail" style="margin-top:20px">
+                        <div class="dfa-tabs">
+                            <button class="dfa-tab active"
+                                onclick="showDFATab('transitions', this)">Transitions</button>
+                            <button class="dfa-tab" onclick="showDFATab('accept', this)">Accept states</button>
+                            <button class="dfa-tab" onclick="showDFATab('prefixes', this)">Shared prefixes</button>
+                            <button class="dfa-tab" onclick="showDFATab('alphabet', this)">Alphabet</button>
+                        </div>
+                        <div class="detail-scroll">
+                            <div id="dfa-tab-content"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- ======================== FORMAL DEFINITION ======================== -->
+        <div class="formal-definition">
+            <div class="formal-title">Formal Definition</div>
+            <div class="formal-content">
+                M = (Q, &Sigma;, &delta;, q<sub>0</sub>, F) where |Q| = <span id="formal-states"></span>,
+                |&Sigma;| = <span id="formal-alphabet"></span>,
+                |&delta;| = <span id="formal-transitions"></span>,
+                q<sub>0</sub> = 0,
+                |F| = <span id="formal-accept"></span>
+            </div>
+        </div>
+
+        <!-- ======================== FOOTER ======================== -->
+        <footer>
+            CPT411 Automata Theory & Formal Languages &mdash; Food Finder DFA &mdash; April 2026<br>
+            <span class="footer-sub">Universiti Sains Malaysia</span>
+        </footer>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
