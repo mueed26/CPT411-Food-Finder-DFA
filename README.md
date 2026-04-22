@@ -57,60 +57,38 @@ roti canai, nasi lemak, teh tarik, mee goreng, curry puff, nasi goreng, char kue
 ```
 CPT411-Food-Finder-DFA/
 │
-├── README.md                    # This file
-├── food_finder_dfa.py           # Python DFA (terminal version)
-├── sample_text.txt              # Sample text for testing (contains all 60 terms)
-│
-└── food-finder-dfa/             # Web interface
-    ├── index.html               # Main HTML file (open in browser)
-    ├── styles.css               # Stylesheet
-    └── app.js                   # JavaScript DFA logic & UI
+├── README.md           # This file
+├── index.html          # Main HTML file (open in browser)
+├── styles.css          # Stylesheet
+└── app.js              # JavaScript DFA logic & UI
 ```
 
 ---
 
 ## 🚀 How to Run
 
-### Option 1: Python (Terminal)
-
-**Prerequisites:** Python 3.6 or higher
-
-```bash
-# Run with a text file
-python food_finder_dfa.py sample_text.txt
-
-# View DFA structure information
-python food_finder_dfa.py --info
-
-# Interactive mode (type or paste text directly)
-python food_finder_dfa.py
-```
-
-#### Terminal Commands in Interactive Mode
-
-| Command | Description |
-|---------|-------------|
-| Type any text | Scans the text for food terms |
-| `file <path>` | Load and scan a text file |
-| `info` | Display DFA structure (states, transitions, accept states) |
-| `quit` | Exit the program |
-
-### Option 2: Web Interface (Browser)
-
 **Prerequisites:** Any modern web browser (Chrome, Firefox, Edge, Safari)
 
-1. Open the `food-finder-dfa/` folder
-2. Double-click `index.html` — it opens in your default browser
-3. No server, no installation, no dependencies needed
+1. Clone or download this repository
+2. Open `index.html` in your browser — just double-click the file
+3. That's it. No server, no installation, no dependencies.
+
+```bash
+# Clone the repo
+git clone https://github.com/YOUR_USERNAME/CPT411-Food-Finder-DFA.git
+
+# Open in browser
+# Just double-click index.html
+```
 
 ---
 
-## 💻 Web Interface Features
+## 💻 Features
 
-- **Text Input** — Paste text or type directly into the text area
+### Input Options
+- **Text Input** — Paste or type text directly into the text area
 - **File Upload** — Upload any `.txt` file using the upload button
-- **Sample Text** — Click "Load sample text" to load a pre-written Malaysian food essay
-- **Run DFA** — Click the green "Run DFA" button to scan the text
+- **Sample Text** — Click "Load sample text" to load a pre-written Malaysian food essay containing all 60 terms
 
 ### Output Sections
 
@@ -118,15 +96,14 @@ python food_finder_dfa.py
 |---------|-------------|
 | **Status Banner** | Green ACCEPTED (matches found) or Red REJECTED (no matches) |
 | **Match Results** | Table showing each food term found, occurrence count, and character positions |
-| **Match Contexts** | Each match shown with 40 characters of surrounding text for context |
+| **Match Contexts** | Each match shown with surrounding text for context |
 | **Highlighted Text** | Full text with all matched food terms highlighted in green |
 | **Food Patterns** | All 60 food terms displayed as tags — found ones light up green |
 | **DFA Structure** | States, transitions, accept states, start state, alphabet size |
-| **Transition Table** | Full DFA transition table (click "Show transition table" to reveal) |
 
 ### DFA Structure Tabs
 
-Click "Show transition table" in the DFA Structure section to access:
+Click **"Show transition table"** in the DFA Structure section to access:
 
 - **Transitions** — Complete transition table (from_state → input_char → to_state)
 - **Accept States** — All 60 accept states mapped to their food patterns
@@ -147,72 +124,35 @@ The DFA is built using a trie (prefix tree) approach:
 
 ### 2. DFA Simulation (Sliding Window)
 
-The text is scanned using a sliding window approach:
 ```
 For each position in the text:
     1. Start at state q0
     2. Read characters one at a time
     3. Follow transitions in the transition table
-    4. If an accept state is reached → check word boundaries → record match
-    5. If no valid transition exists → TRAP STATE → move to next position
+    4. If accept state reached → check word boundaries → record match
+    5. If no valid transition → TRAP STATE → move to next position
 ```
 
 ### 3. Word Boundary Checking
 
-To prevent false matches (e.g., "onde" inside "wonderfully"), the DFA verifies:
-- The character **before** the match is a word boundary (space, punctuation, or start of text)
-- The character **after** the match is a valid ending:
-  - Word boundary (space, punctuation, or end of text)
+Prevents false matches (e.g., "onde" inside "wonderfully"):
+- Character **before** match must be a boundary (space, punctuation, start of text)
+- Character **after** match must be a valid ending:
+  - Word boundary (space, punctuation, end of text)
   - Plural 's' followed by a boundary (handles "sambals", "laksas", etc.)
 
 ### 4. Longest Match Filtering
 
-When patterns overlap (e.g., "kuih" and "kuih lapis" both match at the same position), only the longest match is kept in the results.
-
----
-
-## 📊 Sample Output (Terminal)
-
-```
-======================================================================
-  FOOD FINDER DFA - RESULTS
-======================================================================
-
-  PATTERNS SEARCHED (60 food terms):
-
-  Single-word:
-    laksa, satay, rendang, chapati, lemang
-    rojak, cendol, tempoyak, dodol, kuih
-    ...
-
-  TEXT SOURCE: sample_text.txt
-  TEXT LENGTH: 7044 characters
-----------------------------------------------------------------------
-
-  STATUS: ACCEPTED - 78 food term(s) found!
-----------------------------------------------------------------------
-
-  MATCH DETAILS:
-
-  Food Term            Count    Positions
-  -------------------- -------- ------------------------------
-  laksa                3        [981:986], [1065:1070], [1083:1088]
-  satay                1        [2281:2286]
-  rendang              3        [2775:2782], [4839:4846], [5784:5791]
-  ...
-
-  TOTAL MATCHES: 78
-  UNIQUE FOOD TERMS FOUND: 60
-```
+When patterns overlap (e.g., "kuih" and "kuih lapis" both match at the same position), only the longest match is kept.
 
 ---
 
 ## 🔧 Technical Details
 
-### Programming Languages
-- **Python 3** — Terminal-based DFA implementation
-- **JavaScript** — Web interface DFA implementation (same algorithm)
-- **HTML/CSS** — Web interface layout and styling
+### Tech Stack
+- **JavaScript** — DFA construction, simulation, and match logic
+- **HTML** — Page structure and layout
+- **CSS** — Dark theme styling, responsive design, animations
 
 ### Key Design Decisions
 
@@ -225,28 +165,11 @@ When patterns overlap (e.g., "kuih" and "kuih lapis" both match at the same posi
 
 ### Adding New Food Terms
 
-To add more food items, simply add strings to the `FOOD_PATTERNS` list in either:
-- `food_finder_dfa.py` (Python version, line ~47)
-- `app.js` (JavaScript version, line ~30)
-
-No other code changes are needed — the DFA rebuilds automatically.
-
----
-
-## 📝 Report Outline
-
-The technical report follows the recommended structure:
-
-1. **Introduction** — Language definition (L4), scope (60 Malaysian food terms), formal DFA definition M = (Q, Σ, δ, q₀, F)
-2. **Implementation Information**
-   - How strings are read and processed (character-by-character, left to right)
-   - Overview of programming constructs (trie construction, transition table, sliding window)
-3. **Conclusion** — Summary of results and design decisions
-4. **Appendix** — Source code
+To add more food items, simply add strings to the `FOOD_PATTERNS` array in `app.js` (line ~30). No other code changes needed — the DFA rebuilds automatically on page load.
 
 ---
 
 ## 📄 License
 
-This project is submitted as coursework for CPT411 at Universiti Sains Malaysia (USM). 
+This project is submitted as coursework for CPT411 at Universiti Sains Malaysia (USM).  
 Academic integrity policies apply.
