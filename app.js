@@ -1,9 +1,4 @@
 /**
- * =============================================================================
- * FOOD FINDER DFA — Application Logic
- * CPT411 Automata Theory & Formal Languages
- * =============================================================================
- *
  * This file contains:
  *   1. Food pattern definitions (60 Malaysian food terms)
  *   2. DFA construction (trie-based transition table builder)
@@ -52,7 +47,7 @@ const FOOD_PATTERNS = [
 // =============================================================================
 
 /**
- * Build the DFA transition table from the food patterns.
+ 
  *
  * Uses a trie-based approach:
  *   - State 0 is the start state
@@ -61,7 +56,7 @@ const FOOD_PATTERNS = [
  *     share states for 'n','a','s','i',' ')
  *   - Accept states map to the matched food pattern
  *
- * @returns {Object} transitions (Map), acceptStates (Map), totalStates (number)
+ *
  */
 function buildTransitionTable() {
     const transitions = new Map();
@@ -231,8 +226,7 @@ function filterLongestMatches(matches) {
 /**
  * Generate HTML with <mark> tags around matched food terms.
  *
- * Creates a boolean array marking each character position, then walks
- * through the text toggling <mark> tags on/off at boundaries.
+
  *
  * @param {string} text - Original text
  * @param {Array} matches - Raw matches (uses longest at each position)
@@ -375,9 +369,6 @@ function runDFA() {
 /**
  * Render all result sections: status banner, table, contexts, highlighted text.
  *
- * @param {string} text - Original input text
- * @param {Array} filtered - Filtered (longest) matches
- * @param {Array} rawMatches - All raw matches from DFA
  */
 function displayResults(text, filtered, rawMatches) {
     const banner = document.getElementById("status-banner");
@@ -494,7 +485,7 @@ function displayResults(text, filtered, rawMatches) {
 
 /**
  * Handle file upload — read .txt file and run DFA on its contents.
- * @param {Event} event - File input change event
+ *
  */
 function loadFile(event) {
     const file = event.target.files[0];
